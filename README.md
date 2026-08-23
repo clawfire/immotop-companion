@@ -7,6 +7,25 @@ et [Web Awesome](https://webawesome.com) pour l'UI du popup.
 
 > Projet non-officiel, non affilié à immotop.lu.
 
+## Aperçu
+
+<table>
+  <tr>
+    <td width="33%">
+      <img src="docs/screenshots/block-and-mask.jpeg" alt="Bouton de blocage au survol du logo d'une agence" />
+      <br />Un bouton apparaît au survol du logo d'une agence.
+    </td>
+    <td width="33%">
+      <img src="docs/screenshots/search-results.jpeg" alt="Annonces floutées d'un vendeur bloqué sur les résultats de recherche" />
+      <br />Les annonces du vendeur bloqué sont floutées, pas supprimées.
+    </td>
+    <td width="33%">
+      <img src="docs/screenshots/popup.jpeg" alt="Popup de l'extension listant les vendeurs bloqués" />
+      <br />Le popup liste, exporte et importe les vendeurs bloqués.
+    </td>
+  </tr>
+</table>
+
 ## Fonctionnement
 
 - Sur une page de résultats de recherche, un petit bouton apparaît au survol du logo de chaque
@@ -54,7 +73,7 @@ Charger ensuite le dossier `dist/` dans Chrome via `chrome://extensions` → mod
 - `src/shared/storage.js` — accès partagé à `chrome.storage.local` (liste des vendeurs bloqués)
 - `src/shared/i18n.js` — traductions (FR/DE/EN/PT/LB), détection de la langue du navigateur et
   préférence de langue stockée dans `chrome.storage.local`
-- `public/icons/` — icônes (placeholders à remplacer)
+- `public/icons/` — icônes de l'extension (générées depuis `design/icon.svg`)
 
 ## Contribuer
 
