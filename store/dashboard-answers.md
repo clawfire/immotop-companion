@@ -58,6 +58,38 @@ stocké localement via `chrome.storage.local` et ne quitte jamais l'appareil.
 GitHub Pages sur le dépôt et republier `PRIVACY.md` en `.html`, ou coller le contenu sur une page
 dédiée.)
 
+## Reviewer test instructions
+
+À coller dans le champ "Notes for the reviewer" / "Test instructions" du formulaire de
+soumission (généralement dans l'onglet où l'on justifie les permissions, ou dans un champ dédié
+si demandé). En anglais, comme attendu par l'équipe de review Google.
+
+> No account or sign-in is required to test this extension.
+>
+> 1. Install the extension and open this immotop.lu search-results page:
+>    https://www.immotop.lu/search-list/?idContratto=2&idCategoria=1&criterio=rilevanza&__lang=en
+> 2. Wait for the listings to load. Most listing cards show an agency logo in the top-right
+>    corner (e.g. "Solcolux Immobilier", "CASA MIA IMMOBILIEN"). Hover over one of these logos: a
+>    small round button appears floating above it.
+> 3. Click that button. The card is immediately blurred in place, with an overlay reading
+>    "Annonce masquée" / listing text with the blocked seller's name, and a "Afficher quand même"
+>    ("Show anyway") button. A confirmation toast with an "Annuler" (Undo) action also appears at
+>    the bottom of the page for a few seconds.
+> 4. Click "Show anyway" on the blurred card: it becomes readable again for that card only.
+> 5. Click the extension's toolbar icon to open the popup. The seller you just blocked is listed
+>    there with its logo and the block date.
+> 6. In the popup, try: removing the seller (✕ on its card — its listings become visible again on
+>    the search page), "Exporter"/"Export" (downloads a JSON file), and "Importer"/"Import"
+>    (re-select the same JSON file — it merges back into the list).
+> 7. Still in the popup, use the "Langue"/"Language" dropdown to switch the interface language
+>    (Français, Deutsch, English, Português, Lëtzebuergesch). All popup text updates immediately;
+>    switching it also updates, live, any block button/blur overlay already shown on the
+>    immotop.lu tab, without reloading the page.
+>
+> The extension is scoped to immotop.lu / www.immotop.lu only and has no effect on any other
+> site. All data (blocked-seller list, language preference) is stored locally via
+> `chrome.storage.local` — nothing is sent to any server; see PRIVACY.md in the repository.
+
 ## Store listing
 
 - **Catégorie :** Productivité (Productivity)
