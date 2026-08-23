@@ -1,5 +1,6 @@
 import './content.css';
 import { getBlockedSellers, addBlockedSeller, removeBlockedSeller, onBlockedSellersChanged } from '../shared/storage.js';
+import { resolveLocale, onLocalePreferenceChanged, translate } from '../shared/i18n.js';
 
 const PROCESSED_ATTR = 'data-immotop-blocker';
 const BLOCKED_ATTR = 'data-immotop-blocked';
@@ -16,8 +17,15 @@ const MASK_ICON_SVG =
 /** @type {Map<string, { id: string, name: string, logo: string }>} */
 let blockedMap = new Map();
 
+let currentLocale = 'fr';
+function t(key, params) {
+  return translate(currentLocale, key, params);
+}
+
 /** Registered buttons living in the overlay, keyed by the figure they track. @type {Map<Element, HTMLButtonElement>} */
 const overlayButtons = new Map();
+/** Masks currently in the DOM, so their text can be refreshed on a locale change. @type {Set<HTMLElement>} */
+const activeMasks = new Set();
 let overlayEl = null;
 let repositionScheduled = false;
 
@@ -42,6 +50,13 @@ function getSellerFromCard(li) {
   return { id: extractSellerId(img.src), name, logo: img.src };
 }
 
+function applyMaskText(mask, seller) {
+  mask.__seller = seller;
+  mask.__titleEl.textContent = t('content.maskTitle');
+  mask.__subtitleEl.textContent = t('content.maskSubtitle', { name: seller.name });
+  mask.__revealBtn.textContent = t('content.maskReveal');
+}
+
 function buildMask(seller) {
   const mask = document.createElement('div');
   mask.className = 'immotop-blocker-mask';
@@ -52,16 +67,18 @@ function buildMask(seller) {
 
   const title = document.createElement('div');
   title.className = 'immotop-blocker-mask-title';
-  title.textContent = 'Annonce masquée';
 
   const subtitle = document.createElement('div');
   subtitle.className = 'immotop-blocker-mask-subtitle';
-  subtitle.textContent = `Vendeur bloqué : ${seller.name}`;
 
   const revealBtn = document.createElement('button');
   revealBtn.type = 'button';
   revealBtn.className = 'immotop-blocker-mask-reveal';
-  revealBtn.textContent = 'Afficher quand même';
+
+  mask.__titleEl = title;
+  mask.__subtitleEl = subtitle;
+  mask.__revealBtn = revealBtn;
+  applyMaskText(mask, seller);
 
   mask.append(icon, title, subtitle, revealBtn);
 
@@ -80,8 +97,10 @@ function buildMask(seller) {
     stop(e);
     mask.closest('li')?.setAttribute(REVEALED_ATTR, 'true');
     mask.remove();
+    activeMasks.delete(mask);
   });
 
+  activeMasks.add(mask);
   return mask;
 }
 
@@ -94,7 +113,11 @@ function applyBlockState(li, seller) {
   } else if (li.getAttribute(BLOCKED_ATTR) === 'true') {
     li.removeAttribute(BLOCKED_ATTR);
     li.removeAttribute(REVEALED_ATTR);
-    li.querySelector('.immotop-blocker-mask')?.remove();
+    const mask = li.querySelector('.immotop-blocker-mask');
+    if (mask) {
+      activeMasks.delete(mask);
+      mask.remove();
+    }
   }
 }
 
@@ -183,6 +206,12 @@ function attachHoverReveal(figure, btn) {
   btn.addEventListener('blur', () => setButtonVisible(btn, false));
 }
 
+function applyBlockButtonText(btn, seller) {
+  btn.__seller = seller;
+  btn.title = t('content.blockTitle', { name: seller.name });
+  btn.setAttribute('aria-label', t('content.blockAria', { name: seller.name }));
+}
+
 function injectBlockButton(li, img, seller) {
   const figure = img.closest('figure');
   if (!figure || overlayButtons.has(figure)) return;
@@ -190,9 +219,8 @@ function injectBlockButton(li, img, seller) {
   const btn = document.createElement('button');
   btn.type = 'button';
   btn.className = 'immotop-blocker-btn';
-  btn.title = `Bloquer « ${seller.name} »`;
-  btn.setAttribute('aria-label', `Bloquer le vendeur ${seller.name}`);
   btn.innerHTML = BLOCK_ICON_SVG;
+  applyBlockButtonText(btn, seller);
 
   const stop = (e) => {
     e.preventDefault();
@@ -202,7 +230,9 @@ function injectBlockButton(li, img, seller) {
   btn.addEventListener('click', async (e) => {
     stop(e);
     await addBlockedSeller(seller);
-    showToast(`« ${seller.name} » a été bloqué`, 'Annuler', () => removeBlockedSeller(seller.id));
+    showToast(t('content.toastBlocked', { name: seller.name }), t('content.toastUndo'), () =>
+      removeBlockedSeller(seller.id),
+    );
   });
 
   attachHoverReveal(figure, btn);
@@ -234,7 +264,18 @@ function reapplyBlockStates() {
   });
 }
 
+function refreshInjectedTexts() {
+  for (const btn of overlayButtons.values()) {
+    if (btn.__seller) applyBlockButtonText(btn, btn.__seller);
+  }
+  for (const mask of activeMasks) {
+    if (mask.__seller) applyMaskText(mask, mask.__seller);
+  }
+}
+
 async function init() {
+  currentLocale = await resolveLocale();
+
   const sellers = await getBlockedSellers();
   blockedMap = new Map(sellers.map((s) => [s.id, s]));
 
@@ -253,6 +294,11 @@ async function init() {
   onBlockedSellersChanged((list) => {
     blockedMap = new Map(list.map((s) => [s.id, s]));
     reapplyBlockStates();
+  });
+
+  onLocalePreferenceChanged(async () => {
+    currentLocale = await resolveLocale();
+    refreshInjectedTexts();
   });
 }
 

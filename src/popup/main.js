@@ -1,20 +1,33 @@
 import '@awesome.me/webawesome/dist/styles/webawesome.css';
 import '@awesome.me/webawesome/dist/components/button/button.js';
+import '@awesome.me/webawesome/dist/components/select/select.js';
+import '@awesome.me/webawesome/dist/components/option/option.js';
 import './styles.css';
 import { getBlockedSellers, removeBlockedSeller, mergeBlockedSellers } from '../shared/storage.js';
+import { resolveLocale, getLocalePreference, setLocalePreference, translate, SUPPORTED_LOCALES } from '../shared/i18n.js';
 
 const CLOSE_ICON_SVG =
   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>';
 
 const listEl = document.getElementById('list');
 const emptyEl = document.getElementById('empty');
+const emptyTitleEl = document.querySelector('.app__empty-title');
+const emptyHintEl = document.querySelector('.app__hint');
 const countEl = document.getElementById('count');
 const errorEl = document.getElementById('error');
 const exportBtn = document.getElementById('export-btn');
+const exportBtnLabel = document.getElementById('export-btn-label');
 const importBtn = document.getElementById('import-btn');
+const importBtnLabel = document.getElementById('import-btn-label');
 const importInput = document.getElementById('import-input');
+const languageSelect = document.getElementById('language-select');
 
-const dateFormatter = new Intl.DateTimeFormat('fr-LU', { day: '2-digit', month: '2-digit', year: 'numeric' });
+let currentLocale = 'fr';
+function t(key, params) {
+  return translate(currentLocale, key, params);
+}
+
+let dateFormatter = new Intl.DateTimeFormat(currentLocale, { day: '2-digit', month: '2-digit', year: 'numeric' });
 
 function showError(message) {
   if (!message) {
@@ -24,6 +37,20 @@ function showError(message) {
   }
   errorEl.hidden = false;
   errorEl.textContent = message;
+}
+
+function applyStaticTexts() {
+  document.documentElement.lang = currentLocale;
+  exportBtnLabel.textContent = t('toolbar.export');
+  importBtnLabel.textContent = t('toolbar.import');
+  languageSelect.label = t('language.label');
+  const optionKeys = ['auto', 'fr', 'de', 'en', 'pt', 'lb'];
+  languageSelect.querySelectorAll('wa-option').forEach((option, index) => {
+    option.textContent = t(`language.${optionKeys[index]}`);
+  });
+  emptyTitleEl.textContent = t('empty.title');
+  emptyHintEl.textContent = t('empty.hint');
+  dateFormatter = new Intl.DateTimeFormat(currentLocale, { day: '2-digit', month: '2-digit', year: 'numeric' });
 }
 
 function render(sellers) {
@@ -60,8 +87,8 @@ function render(sellers) {
     const closeBtn = document.createElement('button');
     closeBtn.type = 'button';
     closeBtn.className = 'app__card-close';
-    closeBtn.title = `Débloquer « ${seller.name} »`;
-    closeBtn.setAttribute('aria-label', `Débloquer ${seller.name}`);
+    closeBtn.title = t('card.unblockTitle', { name: seller.name });
+    closeBtn.setAttribute('aria-label', t('card.unblockAria', { name: seller.name }));
     closeBtn.innerHTML = CLOSE_ICON_SVG;
     closeBtn.addEventListener('click', async () => {
       showError('');
@@ -73,7 +100,7 @@ function render(sellers) {
 
     const badge = document.createElement('span');
     badge.className = 'app__badge';
-    badge.textContent = `Bloqué le ${dateFormatter.format(new Date(seller.addedAt))}`;
+    badge.textContent = t('badge.blockedOn', { date: dateFormatter.format(new Date(seller.addedAt)) });
 
     card.append(row, badge);
     li.appendChild(card);
@@ -90,8 +117,9 @@ exportBtn.addEventListener('click', async () => {
   const sellers = await getBlockedSellers();
   const payload = {
     format: 'immotop-blocked-sellers',
-    version: 1,
+    version: 2,
     exportedAt: new Date().toISOString(),
+    language: await getLocalePreference(),
     sellers,
   };
   const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
@@ -122,7 +150,7 @@ importInput.addEventListener('change', async () => {
     const sellers = Array.isArray(data) ? data : data?.sellers;
 
     if (!Array.isArray(sellers)) {
-      throw new Error('Format de fichier invalide.');
+      throw new Error('invalidFile');
     }
 
     const cleaned = sellers
@@ -130,14 +158,38 @@ importInput.addEventListener('change', async () => {
       .map((s) => ({ id: s.id, name: s.name, logo: typeof s.logo === 'string' ? s.logo : '', addedAt: s.addedAt }));
 
     if (cleaned.length === 0) {
-      throw new Error('Aucun vendeur valide trouvé dans le fichier.');
+      throw new Error('noValidSellers');
     }
 
     await mergeBlockedSellers(cleaned);
+
+    const importedLanguage = data?.language;
+    if (importedLanguage === 'auto' || SUPPORTED_LOCALES.includes(importedLanguage)) {
+      await setLocalePreference(importedLanguage);
+      currentLocale = await resolveLocale();
+      languageSelect.value = importedLanguage;
+      applyStaticTexts();
+    }
+
     await refresh();
   } catch (err) {
-    showError(err instanceof Error ? err.message : 'Impossible de lire ce fichier.');
+    const code = err instanceof Error && ['invalidFile', 'noValidSellers'].includes(err.message) ? err.message : 'readFailed';
+    showError(t(`error.${code}`));
   }
 });
 
-refresh();
+languageSelect.addEventListener('change', async () => {
+  await setLocalePreference(languageSelect.value);
+  currentLocale = await resolveLocale();
+  applyStaticTexts();
+  await refresh();
+});
+
+async function init() {
+  currentLocale = await resolveLocale();
+  languageSelect.value = await getLocalePreference();
+  applyStaticTexts();
+  await refresh();
+}
+
+init();

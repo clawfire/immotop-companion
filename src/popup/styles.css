@@ -120,6 +120,16 @@ body {
   height: 14px;
 }
 
+.app__language-row {
+  padding: 12px 16px;
+  background: #ffffff;
+  border-bottom: 1px solid var(--app-border);
+}
+
+.app__language-row wa-select {
+  width: 100%;
+}
+
 .app__error {
   margin: 12px 16px 0;
   padding: 8px 12px;

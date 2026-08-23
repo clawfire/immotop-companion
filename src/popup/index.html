@@ -31,7 +31,7 @@
             <path d="M7 10l5 5 5-5" />
             <path d="M4 19h16" />
           </svg>
-          Exporter
+          <span id="export-btn-label">Exporter</span>
         </wa-button>
         <wa-button size="s" appearance="outlined" id="import-btn">
           <svg slot="start" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -39,9 +39,20 @@
             <path d="M7 8l5-5 5 5" />
             <path d="M4 19h16" />
           </svg>
-          Importer
+          <span id="import-btn-label">Importer</span>
         </wa-button>
         <input type="file" id="import-input" accept="application/json" hidden />
+      </div>
+
+      <div class="app__language-row">
+        <wa-select size="s" id="language-select" label="Langue">
+          <wa-option value="auto">Auto (navigateur)</wa-option>
+          <wa-option value="fr">Français</wa-option>
+          <wa-option value="de">Deutsch</wa-option>
+          <wa-option value="en">English</wa-option>
+          <wa-option value="pt">Português</wa-option>
+          <wa-option value="lb">Lëtzebuergesch</wa-option>
+        </wa-select>
       </div>
 
       <p class="app__error" id="error" hidden></p>

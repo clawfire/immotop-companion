@@ -20,7 +20,11 @@ et [Web Awesome](https://webawesome.com) pour l'UI du popup.
 - Le popup de l'extension (icône dans la barre d'outils) liste les vendeurs bloqués et permet de :
   - retirer un vendeur de la liste (ses annonces redeviennent visibles),
   - exporter la liste au format JSON,
-  - importer une liste JSON précédemment exportée (fusion avec la liste existante).
+  - importer une liste JSON précédemment exportée (fusion avec la liste existante),
+  - changer la langue de l'interface (Français, Deutsch, English, Português, Lëtzebuergesch).
+- La langue est auto-détectée à partir du navigateur au premier lancement, mais peut être forcée
+  manuellement dans le popup ; le choix est mémorisé et s'applique instantanément à la popup et aux
+  éléments injectés sur immotop.lu (bouton de blocage, overlay flouté).
 
 ## Développement
 
@@ -46,4 +50,6 @@ Charger ensuite le dossier `dist/` dans Chrome via `chrome://extensions` → mod
 - `src/content/` — content script injecté sur immotop.lu : détecte les logos d'agences dans les
   résultats de recherche, ajoute le bouton de blocage et masque les annonces bloquées
 - `src/shared/storage.js` — accès partagé à `chrome.storage.local` (liste des vendeurs bloqués)
+- `src/shared/i18n.js` — traductions (FR/DE/EN/PT/LB), détection de la langue du navigateur et
+  préférence de langue stockée dans `chrome.storage.local`
 - `public/icons/` — icônes (placeholders à remplacer)
