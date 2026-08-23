@@ -5,25 +5,43 @@ endroits correspondants.
 
 ## Privacy practices
 
-**Single purpose description :**
+**Description de l'objectif unique (single purpose) :**
 
-> Immotop Companion lets users hide, on immotop.lu search results, all listings from a
-> professional seller or agency they choose to block, with a management panel to review and
-> remove blocked sellers.
+> Immotop Companion permet aux utilisateurs de masquer, sur les résultats de recherche
+> d'immotop.lu, toutes les annonces d'un vendeur professionnel ou d'une agence qu'ils choisissent
+> de bloquer, avec un panneau permettant de consulter et retirer les vendeurs bloqués.
 
-**Permission justifications**
+**Justification de la permission `storage` :**
 
-- `storage` : *"Used to save the user's blocked-seller list and language preference locally in
-  the browser, so their choices persist between sessions. No data leaves the device."*
-- Host access to `immotop.lu` / `www.immotop.lu` (déclaré via `content_scripts`, pas via
-  `host_permissions`) : *"The content script only runs on immotop.lu search-results pages to
-  detect agency logos already shown on the page and overlay a block button / blur mask. It does
-  not read, modify, or transmit any other page data."*
+> Utilisée pour enregistrer localement, dans le navigateur, la liste des vendeurs bloqués par
+> l'utilisateur ainsi que sa préférence de langue, afin que ces choix soient conservés d'une
+> session à l'autre. Aucune donnée ne quitte l'appareil.
 
-**Are you using remote code?**
+**Justification de l'accès à l'hôte** (`immotop.lu` / `www.immotop.lu`, déclaré via
+`content_scripts` plutôt que `host_permissions`) :
 
-Non — tout le code JavaScript/CSS est empaqueté dans l'extension (bundle Vite), aucun script n'est
-chargé depuis un serveur distant à l'exécution.
+> Le content script s'exécute uniquement sur les pages de résultats de recherche d'immotop.lu,
+> pour y détecter les logos d'agences déjà affichés sur la page et y superposer un bouton de
+> blocage ainsi qu'un overlay de floutage. Il ne lit, ne modifie et ne transmet aucune autre
+> donnée de la page.
+
+**Utilisez-vous du code distant (remote code) ?**
+
+> Non. L'ensemble du code JavaScript et CSS est empaqueté dans l'extension au moment du build
+> (bundle Vite). Aucun script n'est chargé ou exécuté depuis un serveur distant à l'exécution.
+
+Versions anglaises équivalentes (si le Dashboard est en anglais) :
+
+- Single purpose: *"Immotop Companion lets users hide, on immotop.lu search results, all
+  listings from a professional seller or agency they choose to block, with a management panel to
+  review and remove blocked sellers."*
+- `storage` justification: *"Used to save the user's blocked-seller list and language preference
+  locally in the browser, so their choices persist between sessions. No data leaves the device."*
+- Host permission justification: *"The content script only runs on immotop.lu search-results
+  pages to detect agency logos already shown on the page and overlay a block button / blur mask.
+  It does not read, modify, or transmit any other page data."*
+- Remote code: *"No. All JavaScript/CSS is bundled into the extension at build time (Vite
+  bundle). No script is loaded or executed from a remote server at runtime."*
 
 **Data usage**
 
