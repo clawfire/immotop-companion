@@ -1,0 +1,163 @@
+/*
+ * The site clips its logo figure with `overflow: hidden`, and so do all of its
+ * ancestors up to the card <li>. A button positioned inside that box gets cut
+ * off at the edges. So the button lives in its own fixed overlay layer appended
+ * to <body>, positioned in JS to track each logo's on-screen corner — see
+ * index.js. That lets it float fully above the card instead of being clipped.
+ */
+#immotop-blocker-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2147483000;
+}
+
+.immotop-blocker-btn {
+  all: unset;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 24px;
+  height: 24px;
+  transform: translate(-50%, -60%) scale(0.85);
+  border-radius: 999px;
+  background: #ffffff;
+  color: #b42318;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 0.15s ease,
+    transform 0.15s ease,
+    background 0.15s ease,
+    color 0.15s ease;
+}
+
+.immotop-blocker-btn.is-visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(-50%, -60%) scale(1);
+}
+
+.immotop-blocker-btn:hover,
+.immotop-blocker-btn:focus-visible {
+  background: #b42318;
+  color: #ffffff;
+}
+
+.immotop-blocker-btn svg {
+  width: 13px;
+  height: 13px;
+  pointer-events: none;
+}
+
+li[data-immotop-blocked] {
+  position: relative;
+}
+
+.immotop-blocker-mask {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: var(--wa-space-m, 16px);
+  text-align: center;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(9px);
+  -webkit-backdrop-filter: blur(9px);
+  font: 13px/1.4 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: #1f2937;
+}
+
+.immotop-blocker-mask-icon {
+  width: 26px;
+  height: 26px;
+  color: #6b7280;
+  margin-bottom: 4px;
+}
+
+.immotop-blocker-mask-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.immotop-blocker-mask-title {
+  font-weight: 700;
+}
+
+.immotop-blocker-mask-subtitle {
+  color: #4b5563;
+  max-width: 26em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.immotop-blocker-mask-reveal {
+  all: unset;
+  margin-top: 8px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  background: #ffffff;
+  color: #1f2937;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.immotop-blocker-mask-reveal:hover,
+.immotop-blocker-mask-reveal:focus-visible {
+  background: #f3f4f6;
+}
+
+.immotop-blocker-toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: #1f2937;
+  color: #ffffff;
+  padding: 10px 16px;
+  border-radius: 10px;
+  font: 13px/1.4 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+  z-index: 2147483647;
+  animation: immotop-blocker-toast-in 0.18s ease;
+}
+
+.immotop-blocker-toast button {
+  all: unset;
+  color: #93c5fd;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.immotop-blocker-toast button:hover,
+.immotop-blocker-toast button:focus-visible {
+  text-decoration: underline;
+}
+
+@keyframes immotop-blocker-toast-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 8px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}

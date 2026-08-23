@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="fr" class="wa-theme-default wa-palette-blue">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Immotop Companion</title>
+  </head>
+  <body>
+    <div class="app">
+      <header class="app__header">
+        <div class="app__brand">
+          <span class="app__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 11.5 12 4l9 7.5" />
+              <path d="M5.5 10v9a1 1 0 0 0 1 1H9v-5.5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1V20h2.5a1 1 0 0 0 1-1v-9" />
+              <circle cx="17.5" cy="7.5" r="4" fill="var(--wa-color-surface-default, #fff)" />
+              <path d="M15.9 7.5h3.2M17.5 5.9v3.2" transform="rotate(45 17.5 7.5)" />
+            </svg>
+          </span>
+          <div class="app__brand-text">
+            <h1 class="app__title">Immotop Companion</h1>
+            <a class="app__credit" href="https://thibaultmilan.com" target="_blank" rel="noopener noreferrer">by Thibault Milan</a>
+          </div>
+        </div>
+        <span class="app__count" id="count">0</span>
+      </header>
+
+      <div class="app__toolbar">
+        <wa-button size="s" appearance="outlined" id="export-btn">
+          <svg slot="start" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3v12" />
+            <path d="M7 10l5 5 5-5" />
+            <path d="M4 19h16" />
+          </svg>
+          Exporter
+        </wa-button>
+        <wa-button size="s" appearance="outlined" id="import-btn">
+          <svg slot="start" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 15V3" />
+            <path d="M7 8l5-5 5 5" />
+            <path d="M4 19h16" />
+          </svg>
+          Importer
+        </wa-button>
+        <input type="file" id="import-input" accept="application/json" hidden />
+      </div>
+
+      <p class="app__error" id="error" hidden></p>
+
+      <div class="app__content">
+        <ul class="app__list" id="list"></ul>
+
+        <div class="app__empty" id="empty" hidden>
+          <p class="app__empty-title">Aucun vendeur bloqué</p>
+          <p class="app__hint">
+            Sur une page de résultats immotop.lu, survolez le logo d'une agence et cliquez sur
+            l'icône qui apparaît pour la bloquer.
+          </p>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="./main.js"></script>
+  </body>
+</html>

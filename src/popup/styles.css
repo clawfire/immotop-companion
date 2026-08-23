@@ -1,0 +1,233 @@
+:root {
+  color-scheme: light;
+  --app-accent: #0078d4;
+  --app-accent-quiet: #e5f2fb;
+  --app-bg: #f3f4f6;
+  --app-border: #e5e7eb;
+  --app-text: #111827;
+  --app-text-quiet: #6b7280;
+  --app-danger: #c2410c;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+body {
+  margin: 0;
+  width: 360px;
+  max-height: 560px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: var(--app-bg);
+  color: var(--app-text);
+  font-family: var(--wa-font-family-body, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  max-height: 560px;
+}
+
+.app__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--wa-space-s);
+  padding: 14px 16px;
+  background: #ffffff;
+  border-bottom: 1px solid var(--app-border);
+}
+
+.app__brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.app__icon {
+  display: flex;
+  color: var(--app-accent);
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.app__icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.app__brand-text {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  min-width: 0;
+}
+
+.app__title {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--app-accent);
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+.app__credit {
+  font-size: 11px;
+  color: var(--app-text-quiet);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.app__credit:hover,
+.app__credit:focus-visible {
+  color: var(--app-accent);
+  text-decoration: underline;
+}
+
+.app__count {
+  min-width: 24px;
+  height: 24px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: var(--app-accent);
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.app__toolbar {
+  display: flex;
+  gap: 8px;
+  padding: 12px 16px;
+  background: #ffffff;
+  border-bottom: 1px solid var(--app-border);
+}
+
+.app__toolbar wa-button::part(base) {
+  font-weight: 600;
+}
+
+.app__toolbar wa-button svg {
+  width: 14px;
+  height: 14px;
+}
+
+.app__error {
+  margin: 12px 16px 0;
+  padding: 8px 12px;
+  background: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  font-size: 12px;
+}
+
+.app__content {
+  overflow-y: auto;
+  padding: 14px;
+}
+
+.app__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.app__card {
+  background: #ffffff;
+  border: 1px solid var(--app-border);
+  border-radius: 12px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  padding: 14px;
+}
+
+.app__card-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.app__logo {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  border: 1px solid var(--app-border);
+  object-fit: contain;
+  background: #fff;
+  flex-shrink: 0;
+}
+
+.app__card-name {
+  flex: 1;
+  min-width: 0;
+  font-size: 14px;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.app__card-close {
+  all: unset;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  color: var(--app-text-quiet);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.app__card-close:hover,
+.app__card-close:focus-visible {
+  background: #fff1ee;
+  color: var(--app-danger);
+}
+
+.app__card-close svg {
+  width: 14px;
+  height: 14px;
+  pointer-events: none;
+}
+
+.app__badge {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 10px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--app-accent-quiet);
+  color: var(--app-accent);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.app__empty {
+  padding: 40px 16px;
+  text-align: center;
+}
+
+.app__empty-title {
+  font-weight: 700;
+  margin: 0 0 6px;
+}
+
+.app__hint {
+  margin: 0;
+  font-size: 12px;
+  color: var(--app-text-quiet);
+  line-height: 1.5;
+}
