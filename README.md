@@ -5,6 +5,8 @@ Extension Chrome (Manifest V3) qui permet de masquer, sur les résultats de rech
 agence en un clic. Construite avec [Vite](https://vitejs.dev), [@crxjs/vite-plugin](https://crxjs.dev)
 et [Web Awesome](https://webawesome.com) pour l'UI du popup.
 
+> Projet non-officiel, non affilié à immotop.lu.
+
 ## Fonctionnement
 
 - Sur une page de résultats de recherche, un petit bouton apparaît au survol du logo de chaque
@@ -53,3 +55,20 @@ Charger ensuite le dossier `dist/` dans Chrome via `chrome://extensions` → mod
 - `src/shared/i18n.js` — traductions (FR/DE/EN/PT/LB), détection de la langue du navigateur et
   préférence de langue stockée dans `chrome.storage.local`
 - `public/icons/` — icônes (placeholders à remplacer)
+
+## Contribuer
+
+Les bugs, idées et pull requests sont les bienvenus — voir [CONTRIBUTING.md](CONTRIBUTING.md).
+Pour signaler un problème ou proposer une fonctionnalité, ouvre une
+[issue](https://github.com/clawfire/immotop-companion/issues/new/choose).
+
+## Auteur
+
+Développé par [Thibault Milan](https://thibaultmilan.com).
+
+## Licence
+
+Distribué sous licence [CC BY-NC-SA 4.0](LICENSE) (Attribution - Pas d'utilisation commerciale -
+Partage dans les mêmes conditions) — usage et modification libres pour tout ce qui n'est pas
+commercial, à condition de créditer l'auteur et de partager les versions modifiées sous la même
+licence. Pour un usage commercial, contacte l'auteur.

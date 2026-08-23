@@ -3,7 +3,20 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Immotop Companion — extension Chrome",
+  "description": "Extension Chrome pour masquer les annonces d'un vendeur ou d'une agence sur immotop.lu",
+  "license": "CC-BY-NC-SA-4.0",
+  "author": {
+    "name": "Thibault Milan",
+    "url": "https://thibaultmilan.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/clawfire/immotop-companion.git"
+  },
+  "bugs": {
+    "url": "https://github.com/clawfire/immotop-companion/issues"
+  },
+  "homepage": "https://github.com/clawfire/immotop-companion#readme",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
