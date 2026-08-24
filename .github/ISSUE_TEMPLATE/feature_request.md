@@ -1,9 +1,11 @@
 ---
-name: ✨ Feature request
+name: "✨ Feature request"
 about: Proposer une idée ou une amélioration
 title: "[Feature] "
 labels: enhancement
-assignees: ''
+assignees: clawfire
+type: Feature
+
 ---
 
 ## Le problème que ça résout

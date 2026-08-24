@@ -1,9 +1,11 @@
 ---
-name: 🐛 Bug report
+name: "\U0001F41B Bug report"
 about: Signaler un bug ou un comportement inattendu
 title: "[Bug] "
 labels: bug
-assignees: ''
+assignees: clawfire
+type: Bug
+
 ---
 
 ## Description
