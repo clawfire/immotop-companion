@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Immotop Companion",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Masquez les annonces d'un vendeur ou d'une agence sur les résultats de recherche immotop.lu",
   "action": {
     "default_popup": "src/popup/index.html",

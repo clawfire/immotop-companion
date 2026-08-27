@@ -41,6 +41,10 @@ const MESSAGES = {
     'card.unblockRestoreLink': 'Ouvrir mes annonces masquées',
     'settings.syncLoginRequired': "Connectez-vous à votre compte immotop.lu pour pouvoir l'activer.",
     'settings.syncLoginRequiredLink': 'Ouvrir immotop.lu',
+    'restore.bannerText': 'Vendeur retiré du blocage : « {name} ». {count} annonce(s) masquée(s) trouvée(s) sur cette page.',
+    'restore.bannerAction': 'Restaurer ces annonces',
+    'restore.bannerDismiss': 'Terminé',
+    'restore.bannerDone': "{count} annonce(s) de « {name} » restaurée(s) sur cette page. D'autres apparaîtront ici si tu fais défiler ou changes de page.",
   },
   de: {
     'tabs.list': 'Anzeigen',
@@ -80,6 +84,10 @@ const MESSAGES = {
     'card.unblockRestoreLink': 'Meine ausgeblendeten Anzeigen öffnen',
     'settings.syncLoginRequired': 'Melden Sie sich bei Ihrem immotop.lu-Konto an, um sie zu aktivieren.',
     'settings.syncLoginRequiredLink': 'immotop.lu öffnen',
+    'restore.bannerText': 'Anbieter entsperrt: „{name}“. {count} ausgeblendete Anzeige(n) auf dieser Seite gefunden.',
+    'restore.bannerAction': 'Diese Anzeigen wiederherstellen',
+    'restore.bannerDismiss': 'Fertig',
+    'restore.bannerDone': '{count} Anzeige(n) von „{name}“ auf dieser Seite wiederhergestellt. Weitere erscheinen hier beim Scrollen oder Seitenwechsel.',
   },
   en: {
     'tabs.list': 'Listings',
@@ -119,6 +127,10 @@ const MESSAGES = {
     'card.unblockRestoreLink': 'Open my hidden listings',
     'settings.syncLoginRequired': 'Sign in to your immotop.lu account to enable it.',
     'settings.syncLoginRequiredLink': 'Open immotop.lu',
+    'restore.bannerText': 'Seller unblocked: "{name}". {count} hidden listing(s) found on this page.',
+    'restore.bannerAction': 'Restore these listings',
+    'restore.bannerDismiss': 'Done',
+    'restore.bannerDone': '{count} listing(s) from "{name}" restored on this page. More will appear here as you scroll or change page.',
   },
   pt: {
     'tabs.list': 'Anúncios',
@@ -158,6 +170,10 @@ const MESSAGES = {
     'card.unblockRestoreLink': 'Abrir os meus anúncios ocultos',
     'settings.syncLoginRequired': 'Inicie sessão na sua conta immotop.lu para poder ativá-la.',
     'settings.syncLoginRequiredLink': 'Abrir immotop.lu',
+    'restore.bannerText': 'Vendedor desbloqueado: «{name}». {count} anúncio(s) ocultado(s) encontrado(s) nesta página.',
+    'restore.bannerAction': 'Restaurar estes anúncios',
+    'restore.bannerDismiss': 'Concluído',
+    'restore.bannerDone': '{count} anúncio(s) de «{name}» restaurado(s) nesta página. Mais aparecerão aqui ao percorrer ou mudar de página.',
   },
   lb: {
     'tabs.list': 'Annoncen',
@@ -197,6 +213,10 @@ const MESSAGES = {
     'card.unblockRestoreLink': 'Meng verstoppt Annoncen opmaachen',
     'settings.syncLoginRequired': "Loggt Iech an Ärem immotop.lu-Kont an fir se z'aktivéieren.",
     'settings.syncLoginRequiredLink': 'immotop.lu opmaachen',
+    'restore.bannerText': 'Verkeefer entsperrt: „{name}“. {count} verstoppte Annonce(n) op dëser Säit fonnt.',
+    'restore.bannerAction': 'Dës Annoncen erëmhierstellen',
+    'restore.bannerDismiss': 'Fäerdeg',
+    'restore.bannerDone': '{count} Annonce(n) vu „{name}“ op dëser Säit erëmhiergestallt. Weider erschéngen hei beim Scrollen oder Säit wiesselen.',
   },
 };
 

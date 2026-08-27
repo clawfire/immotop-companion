@@ -1,6 +1,7 @@
 export const STORAGE_KEY = 'blockedSellers';
 export const SYNC_STORAGE_KEY = 'smartphoneSync';
 export const LOGIN_STATE_STORAGE_KEY = 'immotopLoginState';
+export const PENDING_RESTORE_STORAGE_KEY = 'pendingRestoreSellers';
 
 /** @typedef {{ id: string, name: string, logo: string, addedAt: number }} BlockedSeller */
 
@@ -105,6 +106,44 @@ export function onLoginStateChanged(callback) {
   chrome.storage.onChanged.addListener((changes, area) => {
     if (area === 'local' && changes[LOGIN_STATE_STORAGE_KEY]) {
       callback(changes[LOGIN_STATE_STORAGE_KEY].newValue || { loggedIn: false, checkedAt: 0 });
+    }
+  });
+}
+
+/**
+ * Sellers unblocked while the smartphone sync was on, whose immotop.lu-side listings still need
+ * restoring manually on the "annonces masquées" page.
+ * @typedef {{ id: string, name: string, logo: string, removedAt: number }} PendingRestoreSeller
+ */
+
+/** @returns {Promise<PendingRestoreSeller[]>} */
+export async function getPendingRestoreSellers() {
+  const data = await chrome.storage.local.get(PENDING_RESTORE_STORAGE_KEY);
+  return Array.isArray(data[PENDING_RESTORE_STORAGE_KEY]) ? data[PENDING_RESTORE_STORAGE_KEY] : [];
+}
+
+/** @param {{ id: string, name: string, logo: string }} seller */
+export async function addPendingRestoreSeller(seller) {
+  const list = await getPendingRestoreSellers();
+  if (list.some((s) => s.id === seller.id)) return list;
+  const next = [...list, { id: seller.id, name: seller.name, logo: seller.logo || '', removedAt: Date.now() }];
+  await chrome.storage.local.set({ [PENDING_RESTORE_STORAGE_KEY]: next });
+  return next;
+}
+
+/** @param {string} id */
+export async function removePendingRestoreSeller(id) {
+  const list = await getPendingRestoreSellers();
+  const next = list.filter((s) => s.id !== id);
+  await chrome.storage.local.set({ [PENDING_RESTORE_STORAGE_KEY]: next });
+  return next;
+}
+
+/** @param {(list: PendingRestoreSeller[]) => void} callback */
+export function onPendingRestoreSellersChanged(callback) {
+  chrome.storage.onChanged.addListener((changes, area) => {
+    if (area === 'local' && changes[PENDING_RESTORE_STORAGE_KEY]) {
+      callback(changes[PENDING_RESTORE_STORAGE_KEY].newValue || []);
     }
   });
 }

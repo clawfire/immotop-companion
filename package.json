@@ -1,6 +1,6 @@
 {
   "name": "immotop-companion",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "type": "module",
   "description": "Extension Chrome pour masquer les annonces d'un vendeur ou d'une agence sur immotop.lu",

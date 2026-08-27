@@ -28,16 +28,30 @@ with a clear message and a "Show anyway" button to check one occasionally withou
 - Sellers are matched by their logo image, not their name, avoiding mix-ups between agencies
   with similar names
 - Also works on listings loaded dynamically (infinite scroll, pagination)
-- Management panel: view blocked sellers, remove one, export/import the list as JSON (handy for
-  backups or syncing across browsers)
+- Management panel (two tabs): view and remove blocked sellers, export/import the list as JSON,
+  switch the interface language
+- Smartphone sync (optional, off by default): also clicks immotop.lu's own native "hide" button
+  for each blocked seller's listing, so it disappears from the mobile app too — requires being
+  signed in to your immotop.lu account
+- Assisted restore: on immotop.lu's hidden-listings page, a button appears to restore in one go
+  every listing from a seller you just unblocked
 - Available in French, German, English, Portuguese, and Luxembourgish, with automatic browser
   language detection
+
+**What's new in 0.3.0**
+
+- Smartphone sync: also hides listings on the immotop.lu mobile app, via its own native button —
+  enable it in the Settings tab, requires being signed in
+- An assisted-restore banner on immotop.lu's hidden-listings page, which keeps working as you
+  scroll through more results
+- The popup is now organized into two tabs (Listings / Settings) to stay readable
 
 **Privacy**
 
 Immotop Companion does not collect, transmit, or sell any data. Everything is stored locally in
-your browser (`chrome.storage.local`): your blocked-seller list and language preference. Nothing
-is sent to any external server. Source code is public and open to audit:
+your browser (`chrome.storage.local`): your blocked-seller list, your preferences (language,
+smartphone sync), and the immotop.lu login state detected locally. Nothing is sent to any
+external server other than immotop.lu itself. Source code is public and open to audit:
 https://github.com/clawfire/immotop-companion
 
 **Note**

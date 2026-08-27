@@ -16,6 +16,7 @@ import {
   setSyncEnabled,
   getLoginState,
   onLoginStateChanged,
+  addPendingRestoreSeller,
 } from '../shared/storage.js';
 import { resolveLocale, getLocalePreference, setLocalePreference, translate, SUPPORTED_LOCALES } from '../shared/i18n.js';
 
@@ -148,6 +149,7 @@ function render(sellers) {
       await removeBlockedSeller(seller.id);
       render(await getBlockedSellers());
       if (await getSyncEnabled()) {
+        await addPendingRestoreSeller(seller);
         showRestoreNotice(seller.name);
       }
     });

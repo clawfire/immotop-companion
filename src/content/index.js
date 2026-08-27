@@ -8,6 +8,9 @@ import {
   setSyncEnabled,
   onSyncEnabledChanged,
   setLoginState,
+  getPendingRestoreSellers,
+  removePendingRestoreSeller,
+  onPendingRestoreSellersChanged,
 } from '../shared/storage.js';
 import { resolveLocale, onLocalePreferenceChanged, translate } from '../shared/i18n.js';
 
@@ -22,6 +25,10 @@ const NATIVE_HIDE_BUTTON_SELECTOR = 'button.cy-hideButton[aria-label="masquer an
 const LOGIN_BUTTON_SELECTOR = 'im-login-button';
 const AUTH_MODAL_SELECTOR = '.ic-authModal__container';
 const AUTH_MODAL_CLOSE_SELECTOR = '.nd-dialogFrame__close';
+const RESTORE_PATH_PREFIX = '/utente/annunci/nascosti';
+const RESTORE_ITEM_SELECTOR = 'article.listing-item';
+const RESTORE_AGENCY_LOGO_SELECTOR = 'img.logo-agency';
+const RESTORE_BUTTON_SELECTOR = 'a.js-blacklist';
 
 const BLOCK_ICON_SVG =
   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><line x1="6.5" y1="17.5" x2="17.5" y2="6.5"/></svg>';
@@ -34,6 +41,17 @@ let blockedMap = new Map();
 let syncEnabled = false;
 let syncLoginWarned = false;
 let lastReportedLogin = null;
+
+/** @type {{ id: string, name: string, logo: string }[]} */
+let pendingRestoreSellers = [];
+/** Matched-but-not-yet-restored listing articles per pending seller id. @type {Map<string, Set<Element>>} */
+const restoreMatches = new Map();
+/** Running count of listings already restored per seller id, for the "done so far" banner text. @type {Map<string, number>} */
+const restoredCounts = new Map();
+/** Injected banners per pending seller id, kept around so their text/count can be refreshed. @type {Map<string, HTMLElement>} */
+const restoreBanners = new Map();
+/** Articles already clicked "restore", so a re-scan before the site removes them from the DOM doesn't re-queue them. @type {WeakSet<Element>} */
+const restoredArticles = new WeakSet();
 
 let currentLocale = 'fr';
 function t(key, params) {
@@ -170,6 +188,105 @@ function maybeSyncHide(li) {
 function syncAllBlocked() {
   if (!syncEnabled) return;
   document.querySelectorAll(`${RESULTS_LIST_SELECTOR} > li[${BLOCKED_ATTR}="true"]`).forEach(maybeSyncHide);
+}
+
+function isRestorePage() {
+  return location.pathname.startsWith(RESTORE_PATH_PREFIX);
+}
+
+function removeRestoreBanner(sellerId) {
+  restoreBanners.get(sellerId)?.remove();
+  restoreBanners.delete(sellerId);
+  restoreMatches.delete(sellerId);
+  restoredCounts.delete(sellerId);
+}
+
+async function restoreSeller(seller) {
+  const matched = restoreMatches.get(seller.id);
+  if (!matched || matched.size === 0) return;
+  const count = matched.size;
+  for (const article of matched) {
+    restoredArticles.add(article);
+    article.querySelector(RESTORE_BUTTON_SELECTOR)?.click();
+  }
+  matched.clear();
+  restoredCounts.set(seller.id, (restoredCounts.get(seller.id) || 0) + count);
+  renderRestoreBanner(seller);
+}
+
+/** immotop.lu's hidden-listings page loads more results as you scroll or paginate, so the
+ * button must keep working for newly-arriving matches rather than being a one-shot action. */
+function renderRestoreBanner(seller) {
+  const pending = restoreMatches.get(seller.id)?.size || 0;
+  const restored = restoredCounts.get(seller.id) || 0;
+  let banner = restoreBanners.get(seller.id);
+  if (!banner) {
+    banner = document.createElement('div');
+    banner.className = 'immotop-restore-banner';
+
+    const text = document.createElement('span');
+    const actions = document.createElement('div');
+    actions.className = 'immotop-restore-banner-actions';
+
+    const restoreBtn = document.createElement('button');
+    restoreBtn.type = 'button';
+    restoreBtn.addEventListener('click', () => restoreSeller(seller));
+
+    const dismissBtn = document.createElement('button');
+    dismissBtn.type = 'button';
+    dismissBtn.addEventListener('click', async () => {
+      await removePendingRestoreSeller(seller.id);
+      removeRestoreBanner(seller.id);
+    });
+
+    actions.append(restoreBtn, dismissBtn);
+    banner.append(text, actions);
+
+    banner.__textEl = text;
+    banner.__restoreBtn = restoreBtn;
+    banner.__dismissBtn = dismissBtn;
+
+    const anchor = document.querySelector(RESTORE_ITEM_SELECTOR);
+    if (anchor?.parentElement) {
+      anchor.parentElement.insertBefore(banner, anchor);
+    } else {
+      document.body.insertBefore(banner, document.body.firstChild);
+    }
+    restoreBanners.set(seller.id, banner);
+  }
+  banner.__textEl.textContent =
+    pending > 0
+      ? t('restore.bannerText', { name: seller.name, count: pending })
+      : t('restore.bannerDone', { name: seller.name, count: restored });
+  banner.__restoreBtn.textContent = t('restore.bannerAction');
+  banner.__restoreBtn.disabled = pending === 0;
+  banner.__dismissBtn.textContent = t('restore.bannerDismiss');
+}
+
+/** Scans this page's hidden listings for ones belonging to a seller pending restoration, and shows a banner offering to restore them. */
+function scanForRestoreMatches() {
+  for (const id of [...restoreBanners.keys()]) {
+    if (!pendingRestoreSellers.some((s) => s.id === id)) removeRestoreBanner(id);
+  }
+  if (!pendingRestoreSellers.length) return;
+
+  document.querySelectorAll(RESTORE_ITEM_SELECTOR).forEach((article) => {
+    if (restoredArticles.has(article)) return;
+    const img = article.querySelector(RESTORE_AGENCY_LOGO_SELECTOR);
+    if (!img || !img.src) return;
+    const seller = pendingRestoreSellers.find((s) => s.id === extractSellerId(img.src));
+    if (!seller) return;
+
+    let matched = restoreMatches.get(seller.id);
+    if (!matched) {
+      matched = new Set();
+      restoreMatches.set(seller.id, matched);
+    }
+    if (!matched.has(article)) {
+      matched.add(article);
+      renderRestoreBanner(seller);
+    }
+  });
 }
 
 function applyBlockState(li, seller) {
@@ -341,6 +458,9 @@ function refreshInjectedTexts() {
   for (const mask of activeMasks) {
     if (mask.__seller) applyMaskText(mask, mask.__seller);
   }
+  for (const seller of pendingRestoreSellers) {
+    if (restoreBanners.has(seller.id)) renderRestoreBanner(seller);
+  }
 }
 
 async function init() {
@@ -353,9 +473,15 @@ async function init() {
   processListings();
   reportLoginState();
 
+  if (isRestorePage()) {
+    pendingRestoreSellers = await getPendingRestoreSellers();
+    scanForRestoreMatches();
+  }
+
   const debouncedTick = debounce(() => {
     processListings();
     reportLoginState();
+    if (isRestorePage()) scanForRestoreMatches();
   }, 150);
   const observer = new MutationObserver(() => {
     debouncedTick();
@@ -377,6 +503,11 @@ async function init() {
       syncLoginWarned = false;
       syncAllBlocked();
     }
+  });
+
+  onPendingRestoreSellersChanged((list) => {
+    pendingRestoreSellers = list;
+    if (isRestorePage()) scanForRestoreMatches();
   });
 
   onLocalePreferenceChanged(async () => {

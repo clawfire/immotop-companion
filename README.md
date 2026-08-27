@@ -65,6 +65,12 @@ afin qu'elle disparaisse aussi de l'app mobile.
   dans l'extension. Pour restaurer les annonces masquées côté immotop.lu, il faut se rendre sur
   [la page des annonces masquées du compte](https://www.immotop.lu/utente/annunci/nascosti/) —
   l'extension y renvoie via un lien affiché au moment du déblocage.
+- **Restauration assistée** : sur cette page des annonces masquées, l'extension repère celles qui
+  appartiennent à un vendeur récemment débloqué et affiche une bannière avec un bouton pour les
+  restaurer d'un coup, plutôt que de devoir les retrouver une par une parmi toutes les annonces
+  masquées. Comme la page charge ses résultats au fur et à mesure (défilement infini, pagination),
+  le bouton reste actif et se met à jour à mesure que de nouvelles annonces du même vendeur
+  apparaissent, jusqu'à ce que la bannière soit fermée manuellement.
 
 ## Développement
 

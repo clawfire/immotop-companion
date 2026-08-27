@@ -29,17 +29,31 @@ ponctuellement sans les débloquer.
 - Identification fiable par le logo du vendeur, pas par son nom (évite les confusions entre
   agences aux noms proches)
 - Fonctionne aussi sur les nouvelles annonces chargées par défilement infini ou changement de page
-- Panneau de gestion : liste des vendeurs bloqués, suppression individuelle, export/import de la
-  liste au format JSON (pratique pour la sauvegarder ou la partager entre plusieurs navigateurs)
+- Panneau de gestion (deux onglets) : liste des vendeurs bloqués avec suppression individuelle,
+  export/import de la liste au format JSON, choix de la langue de l'interface
+- Synchro smartphone (optionnelle, désactivée par défaut) : clique aussi sur le bouton natif
+  « masquer » d'immotop.lu pour chaque annonce d'un vendeur bloqué, pour qu'elle disparaisse
+  également de l'app mobile — nécessite d'être connecté à son compte immotop.lu
+- Restauration assistée : sur la page des annonces masquées d'immotop.lu, un bouton apparaît pour
+  restaurer d'un coup toutes celles d'un vendeur qu'on vient de débloquer
 - Interface disponible en français, allemand, anglais, portugais et luxembourgeois, avec
   détection automatique de la langue du navigateur
+
+**Nouveautés de la version 0.3.0**
+
+- Synchro smartphone : masque aussi les annonces sur l'app mobile immotop.lu, via son propre
+  bouton natif — activable dans l'onglet Réglages, nécessite d'être connecté
+- Bannière de restauration assistée sur la page des annonces masquées d'immotop.lu, qui reste
+  active au fil du défilement infini
+- Popup réorganisé en deux onglets (Annonces / Réglages) pour rester lisible
 
 **Confidentialité**
 
 Immotop Companion ne collecte, ne transmet et ne vend aucune donnée. Tout est stocké localement
-dans votre navigateur (`chrome.storage.local`) : la liste des vendeurs bloqués et votre préférence
-de langue. Rien n'est envoyé à un serveur externe. Le code source est public et ouvert à l'audit :
-https://github.com/clawfire/immotop-companion
+dans votre navigateur (`chrome.storage.local`) : la liste des vendeurs bloqués, vos préférences
+(langue, synchro smartphone) et l'état de connexion à immotop.lu détecté localement. Rien n'est
+envoyé à un serveur externe autre qu'immotop.lu lui-même. Le code source est public et ouvert à
+l'audit : https://github.com/clawfire/immotop-companion
 
 **Note**
 
