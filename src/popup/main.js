@@ -2,8 +2,21 @@ import '@awesome.me/webawesome/dist/styles/webawesome.css';
 import '@awesome.me/webawesome/dist/components/button/button.js';
 import '@awesome.me/webawesome/dist/components/select/select.js';
 import '@awesome.me/webawesome/dist/components/option/option.js';
+import '@awesome.me/webawesome/dist/components/switch/switch.js';
+import '@awesome.me/webawesome/dist/components/tab-group/tab-group.js';
+import '@awesome.me/webawesome/dist/components/tab/tab.js';
+import '@awesome.me/webawesome/dist/components/tab-panel/tab-panel.js';
+import '@awesome.me/webawesome/dist/components/callout/callout.js';
 import './styles.css';
-import { getBlockedSellers, removeBlockedSeller, mergeBlockedSellers } from '../shared/storage.js';
+import {
+  getBlockedSellers,
+  removeBlockedSeller,
+  mergeBlockedSellers,
+  getSyncEnabled,
+  setSyncEnabled,
+  getLoginState,
+  onLoginStateChanged,
+} from '../shared/storage.js';
 import { resolveLocale, getLocalePreference, setLocalePreference, translate, SUPPORTED_LOCALES } from '../shared/i18n.js';
 
 const CLOSE_ICON_SVG =
@@ -21,6 +34,18 @@ const importBtn = document.getElementById('import-btn');
 const importBtnLabel = document.getElementById('import-btn-label');
 const importInput = document.getElementById('import-input');
 const languageSelect = document.getElementById('language-select');
+const tabListEl = document.getElementById('tab-list');
+const tabSettingsEl = document.getElementById('tab-settings');
+const syncLabelEl = document.getElementById('sync-label');
+const syncDisclaimerEl = document.getElementById('sync-disclaimer');
+const syncToggle = document.getElementById('sync-toggle');
+const restoreNoticeEl = document.getElementById('restore-notice');
+const restoreNoticeTextEl = document.getElementById('restore-notice-text');
+const restoreNoticeLinkEl = document.getElementById('restore-notice-link');
+const restoreNoticeCloseEl = document.getElementById('restore-notice-close');
+const syncLoginWarningEl = document.getElementById('sync-login-warning');
+const syncLoginWarningTextEl = document.getElementById('sync-login-warning-text');
+const syncLoginWarningLinkEl = document.getElementById('sync-login-warning-link');
 
 let currentLocale = 'fr';
 function t(key, params) {
@@ -50,7 +75,35 @@ function applyStaticTexts() {
   });
   emptyTitleEl.textContent = t('empty.title');
   emptyHintEl.textContent = t('empty.hint');
+  tabListEl.textContent = t('tabs.list');
+  tabSettingsEl.textContent = t('tabs.settings');
+  syncLabelEl.textContent = t('settings.syncTitle');
+  syncDisclaimerEl.textContent = t('settings.syncDisclaimer');
+  restoreNoticeLinkEl.textContent = t('card.unblockRestoreLink');
+  restoreNoticeCloseEl.setAttribute('aria-label', t('common.close'));
+  syncLoginWarningTextEl.textContent = t('settings.syncLoginRequired');
+  syncLoginWarningLinkEl.textContent = t('settings.syncLoginRequiredLink');
   dateFormatter = new Intl.DateTimeFormat(currentLocale, { day: '2-digit', month: '2-digit', year: 'numeric' });
+}
+
+function showRestoreNotice(name) {
+  restoreNoticeTextEl.textContent = t('card.unblockRestoreHint', { name });
+  restoreNoticeEl.hidden = false;
+}
+
+restoreNoticeCloseEl.addEventListener('click', () => {
+  restoreNoticeEl.hidden = true;
+});
+
+/** Gates the sync toggle on immotop.lu's login state: it makes no sense enabled while logged out. */
+async function updateSyncAvailability(loginState) {
+  const loggedIn = loginState.loggedIn === true;
+  syncToggle.disabled = !loggedIn;
+  syncLoginWarningEl.hidden = loggedIn;
+  if (!loggedIn && (await getSyncEnabled())) {
+    await setSyncEnabled(false);
+    syncToggle.checked = false;
+  }
 }
 
 function render(sellers) {
@@ -94,6 +147,9 @@ function render(sellers) {
       showError('');
       await removeBlockedSeller(seller.id);
       render(await getBlockedSellers());
+      if (await getSyncEnabled()) {
+        showRestoreNotice(seller.name);
+      }
     });
 
     row.append(img, name, closeBtn);
@@ -185,9 +241,19 @@ languageSelect.addEventListener('change', async () => {
   await refresh();
 });
 
+syncToggle.addEventListener('change', async () => {
+  await setSyncEnabled(syncToggle.checked);
+});
+
+onLoginStateChanged((state) => {
+  updateSyncAvailability(state);
+});
+
 async function init() {
   currentLocale = await resolveLocale();
   languageSelect.value = await getLocalePreference();
+  syncToggle.checked = await getSyncEnabled();
+  await updateSyncAvailability(await getLoginState());
   applyStaticTexts();
   await refresh();
 }

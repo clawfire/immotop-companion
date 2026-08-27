@@ -24,50 +24,77 @@
         <span class="app__count" id="count">0</span>
       </header>
 
-      <div class="app__toolbar">
-        <wa-button size="s" appearance="outlined" id="export-btn">
-          <svg slot="start" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 3v12" />
-            <path d="M7 10l5 5 5-5" />
-            <path d="M4 19h16" />
-          </svg>
-          <span id="export-btn-label">Exporter</span>
-        </wa-button>
-        <wa-button size="s" appearance="outlined" id="import-btn">
-          <svg slot="start" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 15V3" />
-            <path d="M7 8l5-5 5 5" />
-            <path d="M4 19h16" />
-          </svg>
-          <span id="import-btn-label">Importer</span>
-        </wa-button>
-        <input type="file" id="import-input" accept="application/json" hidden />
-      </div>
+      <wa-tab-group class="app__tabs" id="tabs">
+        <wa-tab panel="list" id="tab-list">Annonces</wa-tab>
+        <wa-tab panel="settings" id="tab-settings">Réglages</wa-tab>
 
-      <div class="app__language-row">
-        <wa-select size="s" id="language-select" label="Langue">
-          <wa-option value="auto">Auto (navigateur)</wa-option>
-          <wa-option value="fr">Français</wa-option>
-          <wa-option value="de">Deutsch</wa-option>
-          <wa-option value="en">English</wa-option>
-          <wa-option value="pt">Português</wa-option>
-          <wa-option value="lb">Lëtzebuergesch</wa-option>
-        </wa-select>
-      </div>
+        <wa-tab-panel name="list" class="app__tab-panel" active>
+          <wa-callout id="error" class="app__error" variant="danger" size="s" hidden></wa-callout>
 
-      <p class="app__error" id="error" hidden></p>
+          <wa-callout id="restore-notice" class="app__notice" variant="brand" size="s" hidden>
+            <button type="button" class="app__notice-close" id="restore-notice-close">&times;</button>
+            <p class="app__notice-text" id="restore-notice-text"></p>
+            <a class="app__notice-link" id="restore-notice-link" href="https://www.immotop.lu/utente/annunci/nascosti/" target="_blank" rel="noopener noreferrer"></a>
+          </wa-callout>
 
-      <div class="app__content">
-        <ul class="app__list" id="list"></ul>
+          <div class="app__content">
+            <ul class="app__list" id="list"></ul>
 
-        <div class="app__empty" id="empty" hidden>
-          <p class="app__empty-title">Aucun vendeur bloqué</p>
-          <p class="app__hint">
-            Sur une page de résultats immotop.lu, survolez le logo d'une agence et cliquez sur
-            l'icône qui apparaît pour la bloquer.
-          </p>
-        </div>
-      </div>
+            <div class="app__empty" id="empty" hidden>
+              <p class="app__empty-title">Aucun vendeur bloqué</p>
+              <p class="app__hint">
+                Sur une page de résultats immotop.lu, survolez le logo d'une agence et cliquez sur
+                l'icône qui apparaît pour la bloquer.
+              </p>
+            </div>
+          </div>
+        </wa-tab-panel>
+
+        <wa-tab-panel name="settings" class="app__tab-panel">
+          <div class="app__toolbar">
+            <wa-button size="s" appearance="outlined" id="export-btn">
+              <svg slot="start" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 3v12" />
+                <path d="M7 10l5 5 5-5" />
+                <path d="M4 19h16" />
+              </svg>
+              <span id="export-btn-label">Exporter</span>
+            </wa-button>
+            <wa-button size="s" appearance="outlined" id="import-btn">
+              <svg slot="start" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 15V3" />
+                <path d="M7 8l5-5 5 5" />
+                <path d="M4 19h16" />
+              </svg>
+              <span id="import-btn-label">Importer</span>
+            </wa-button>
+            <input type="file" id="import-input" accept="application/json" hidden />
+          </div>
+
+          <div class="app__language-row">
+            <wa-select size="s" id="language-select" label="Langue">
+              <wa-option value="auto">Auto (navigateur)</wa-option>
+              <wa-option value="fr">Français</wa-option>
+              <wa-option value="de">Deutsch</wa-option>
+              <wa-option value="en">English</wa-option>
+              <wa-option value="pt">Português</wa-option>
+              <wa-option value="lb">Lëtzebuergesch</wa-option>
+            </wa-select>
+          </div>
+
+          <div class="app__settings-row">
+            <span class="app__settings-label" id="sync-label">Synchro smartphone</span>
+            <wa-switch id="sync-toggle"></wa-switch>
+          </div>
+
+          <wa-callout id="sync-login-warning" class="app__sync-warning" variant="warning" size="s" hidden>
+            <span id="sync-login-warning-text"></span>
+            <a class="app__notice-link" id="sync-login-warning-link" href="https://www.immotop.lu" target="_blank" rel="noopener noreferrer"></a>
+          </wa-callout>
+
+          <p class="app__settings-disclaimer" id="sync-disclaimer"></p>
+        </wa-tab-panel>
+      </wa-tab-group>
     </div>
     <script type="module" src="./main.js"></script>
   </body>

@@ -38,14 +38,33 @@ et [Web Awesome](https://webawesome.com) pour l'UI du popup.
   évite les faux positifs entre agences aux noms proches.
 - Les nouvelles annonces chargées dynamiquement (défilement infini, changement de page) sont
   automatiquement floutées si elles appartiennent à un vendeur déjà bloqué.
-- Le popup de l'extension (icône dans la barre d'outils) liste les vendeurs bloqués et permet de :
-  - retirer un vendeur de la liste (ses annonces redeviennent visibles),
-  - exporter la liste au format JSON,
-  - importer une liste JSON précédemment exportée (fusion avec la liste existante),
-  - changer la langue de l'interface (Français, Deutsch, English, Português, Lëtzebuergesch).
+- Le popup de l'extension (icône dans la barre d'outils) est organisé en deux onglets :
+  - **Annonces** : liste des vendeurs bloqués, avec possibilité de retirer un vendeur de la liste
+    (ses annonces redeviennent visibles) ;
+  - **Réglages** : export/import de la liste au format JSON, choix de la langue de l'interface
+    (Français, Deutsch, English, Português, Lëtzebuergesch), et la synchro smartphone (voir
+    ci-dessous).
 - La langue est auto-détectée à partir du navigateur au premier lancement, mais peut être forcée
   manuellement dans le popup ; le choix est mémorisé et s'applique instantanément à la popup et aux
   éléments injectés sur immotop.lu (bouton de blocage, overlay flouté).
+
+### Synchro smartphone (optionnelle)
+
+immotop.lu propose son propre bouton natif "masquer" sur chaque annonce (icône corbeille), lié au
+compte utilisateur et donc synchronisé entre le site et l'app mobile — contrairement au masquage de
+l'extension, qui n'agit que dans ce navigateur. Activable dans l'onglet **Réglages** du popup, la
+synchro smartphone clique automatiquement ce bouton natif pour chaque annonce d'un vendeur bloqué,
+afin qu'elle disparaisse aussi de l'app mobile.
+
+- **Nécessite d'être connecté** à son compte immotop.lu : le réglage est désactivé et un message
+  l'explique tant que l'extension n'a pas détecté de session active sur immotop.lu (il faut avoir
+  un onglet immotop.lu ouvert, connecté, pour que l'état soit détecté). Si la session se termine
+  pendant que la synchro est active, elle est automatiquement désactivée.
+- **Fonctionnement différent du masquage de l'extension** : l'action est liée au compte immotop.lu
+  (pas seulement à ce navigateur) et n'est pas annulée automatiquement quand on débloque un vendeur
+  dans l'extension. Pour restaurer les annonces masquées côté immotop.lu, il faut se rendre sur
+  [la page des annonces masquées du compte](https://www.immotop.lu/utente/annunci/nascosti/) —
+  l'extension y renvoie via un lien affiché au moment du déblocage.
 
 ## Développement
 
@@ -70,7 +89,8 @@ Charger ensuite le dossier `dist/` dans Chrome via `chrome://extensions` → mod
 - `src/background/` — service worker (met à jour le badge avec le nombre de vendeurs bloqués)
 - `src/content/` — content script injecté sur immotop.lu : détecte les logos d'agences dans les
   résultats de recherche, ajoute le bouton de blocage et masque les annonces bloquées
-- `src/shared/storage.js` — accès partagé à `chrome.storage.local` (liste des vendeurs bloqués)
+- `src/shared/storage.js` — accès partagé à `chrome.storage.local` (liste des vendeurs bloqués,
+  réglage de la synchro smartphone, état de connexion immotop.lu détecté par le content script)
 - `src/shared/i18n.js` — traductions (FR/DE/EN/PT/LB), détection de la langue du navigateur et
   préférence de langue stockée dans `chrome.storage.local`
 - `public/icons/` — icônes de l'extension (générées depuis `design/icon.svg`)

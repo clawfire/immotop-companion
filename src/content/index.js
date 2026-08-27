@@ -1,13 +1,27 @@
 import './content.css';
-import { getBlockedSellers, addBlockedSeller, removeBlockedSeller, onBlockedSellersChanged } from '../shared/storage.js';
+import {
+  getBlockedSellers,
+  addBlockedSeller,
+  removeBlockedSeller,
+  onBlockedSellersChanged,
+  getSyncEnabled,
+  setSyncEnabled,
+  onSyncEnabledChanged,
+  setLoginState,
+} from '../shared/storage.js';
 import { resolveLocale, onLocalePreferenceChanged, translate } from '../shared/i18n.js';
 
 const PROCESSED_ATTR = 'data-immotop-blocker';
 const BLOCKED_ATTR = 'data-immotop-blocked';
 const REVEALED_ATTR = 'data-immotop-revealed';
+const SYNCED_ATTR = 'data-immotop-synced';
 const RESULTS_LIST_SELECTOR = 'ul[data-cy="listing-search-results"]';
 const AGENCY_LOGO_SELECTOR = 'figure[class*="AgencyLogo_logo"] img[alt]';
 const CARD_READY_SELECTOR = 'a[href*="/annonces/"]';
+const NATIVE_HIDE_BUTTON_SELECTOR = 'button.cy-hideButton[aria-label="masquer annonce"]';
+const LOGIN_BUTTON_SELECTOR = 'im-login-button';
+const AUTH_MODAL_SELECTOR = '.ic-authModal__container';
+const AUTH_MODAL_CLOSE_SELECTOR = '.nd-dialogFrame__close';
 
 const BLOCK_ICON_SVG =
   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><line x1="6.5" y1="17.5" x2="17.5" y2="6.5"/></svg>';
@@ -16,6 +30,10 @@ const MASK_ICON_SVG =
 
 /** @type {Map<string, { id: string, name: string, logo: string }>} */
 let blockedMap = new Map();
+
+let syncEnabled = false;
+let syncLoginWarned = false;
+let lastReportedLogin = null;
 
 let currentLocale = 'fr';
 function t(key, params) {
@@ -104,15 +122,67 @@ function buildMask(seller) {
   return mask;
 }
 
+function isLoggedIn() {
+  return !document.querySelector(LOGIN_BUTTON_SELECTOR);
+}
+
+/** Persists the login state so the popup can gate the sync toggle on it, and turns sync off if the session dropped. */
+function reportLoginState() {
+  const loggedIn = isLoggedIn();
+  if (loggedIn === lastReportedLogin) return;
+  lastReportedLogin = loggedIn;
+  setLoginState(loggedIn);
+  if (!loggedIn && syncEnabled) {
+    setSyncEnabled(false);
+  }
+}
+
+function warnSyncLoginRequired() {
+  lastReportedLogin = false;
+  setLoginState(false);
+  if (syncEnabled) setSyncEnabled(false);
+  if (syncLoginWarned) return;
+  syncLoginWarned = true;
+  showToast(t('content.syncLoginWarning'));
+}
+
+/** Clicks immotop.lu's own "masquer annonce" button for an already-blocked, not-yet-synced card. */
+function maybeSyncHide(li) {
+  if (!syncEnabled || li.hasAttribute(SYNCED_ATTR)) return;
+  const hideBtn = li.querySelector(NATIVE_HIDE_BUTTON_SELECTOR);
+  if (!hideBtn) return;
+  if (!isLoggedIn()) {
+    warnSyncLoginRequired();
+    return;
+  }
+  li.setAttribute(SYNCED_ATTR, 'true');
+  hideBtn.click();
+  // The login check above is a heuristic; fall back to detecting the auth modal
+  // immotop.lu opens instead of hiding when the session turns out to be stale.
+  setTimeout(() => {
+    if (!document.querySelector(AUTH_MODAL_SELECTOR)) return;
+    document.querySelector(AUTH_MODAL_CLOSE_SELECTOR)?.click();
+    li.removeAttribute(SYNCED_ATTR);
+    warnSyncLoginRequired();
+  }, 200);
+}
+
+function syncAllBlocked() {
+  if (!syncEnabled) return;
+  document.querySelectorAll(`${RESULTS_LIST_SELECTOR} > li[${BLOCKED_ATTR}="true"]`).forEach(maybeSyncHide);
+}
+
 function applyBlockState(li, seller) {
   if (blockedMap.has(seller.id)) {
     li.setAttribute(BLOCKED_ATTR, 'true');
     if (li.getAttribute(REVEALED_ATTR) !== 'true' && !li.querySelector('.immotop-blocker-mask')) {
       li.appendChild(buildMask(seller));
     }
+    maybeSyncHide(li);
   } else if (li.getAttribute(BLOCKED_ATTR) === 'true') {
     li.removeAttribute(BLOCKED_ATTR);
     li.removeAttribute(REVEALED_ATTR);
+    li.removeAttribute(SYNCED_ATTR);
     const mask = li.querySelector('.immotop-blocker-mask');
     if (mask) {
       activeMasks.delete(mask);
@@ -278,12 +348,17 @@ async function init() {
 
   const sellers = await getBlockedSellers();
   blockedMap = new Map(sellers.map((s) => [s.id, s]));
+  syncEnabled = await getSyncEnabled();
 
   processListings();
+  reportLoginState();
 
-  const debouncedProcess = debounce(processListings, 150);
+  const debouncedTick = debounce(() => {
+    processListings();
+    reportLoginState();
+  }, 150);
   const observer = new MutationObserver(() => {
-    debouncedProcess();
+    debouncedTick();
     scheduleReposition();
   });
   observer.observe(document.body, { childList: true, subtree: true });
@@ -294,6 +369,14 @@ async function init() {
   onBlockedSellersChanged((list) => {
     blockedMap = new Map(list.map((s) => [s.id, s]));
     reapplyBlockStates();
+  });
+
+  onSyncEnabledChanged((enabled) => {
+    syncEnabled = enabled;
+    if (enabled) {
+      syncLoginWarned = false;
+      syncAllBlocked();
+    }
   });
 
   onLocalePreferenceChanged(async () => {

@@ -4,7 +4,10 @@ const LANGUAGE_STORAGE_KEY = 'language';
 
 const MESSAGES = {
   fr: {
+    'tabs.list': 'Annonces',
+    'tabs.settings': 'Réglages',
     'toolbar.export': 'Exporter',
+    'common.close': 'Fermer',
     'toolbar.import': 'Importer',
     'language.label': 'Langue',
     'language.auto': 'Auto (navigateur)',
@@ -29,9 +32,21 @@ const MESSAGES = {
     'content.maskTitle': 'Annonce masquée',
     'content.maskSubtitle': 'Vendeur bloqué : {name}',
     'content.maskReveal': 'Afficher quand même',
+    'settings.syncTitle': 'Synchro smartphone',
+    'settings.syncDisclaimer':
+      "Clique automatiquement sur le bouton « masquer » natif d'immotop.lu pour chaque annonce des vendeurs bloqués, afin qu'elle disparaisse aussi de l'app mobile. Fonctionnement différent du masquage de l'extension : nécessite d'être connecté à votre compte immotop.lu, l'action est liée à ce compte (pas seulement à ce navigateur) et n'est pas annulée automatiquement quand vous débloquez un vendeur.",
+    'content.syncLoginWarning': 'Synchro smartphone : connectez-vous à votre compte immotop.lu pour l’activer.',
+    'card.unblockRestoreHint':
+      'La synchro smartphone était active : les annonces de « {name} » restent masquées sur immotop.lu. Pour les restaurer :',
+    'card.unblockRestoreLink': 'Ouvrir mes annonces masquées',
+    'settings.syncLoginRequired': "Connectez-vous à votre compte immotop.lu pour pouvoir l'activer.",
+    'settings.syncLoginRequiredLink': 'Ouvrir immotop.lu',
   },
   de: {
+    'tabs.list': 'Anzeigen',
+    'tabs.settings': 'Einstellungen',
     'toolbar.export': 'Exportieren',
+    'common.close': 'Schließen',
     'toolbar.import': 'Importieren',
     'language.label': 'Sprache',
     'language.auto': 'Automatisch (Browser)',
@@ -56,9 +71,21 @@ const MESSAGES = {
     'content.maskTitle': 'Anzeige ausgeblendet',
     'content.maskSubtitle': 'Blockierter Anbieter: {name}',
     'content.maskReveal': 'Trotzdem anzeigen',
+    'settings.syncTitle': 'Smartphone-Synchronisierung',
+    'settings.syncDisclaimer':
+      'Klickt automatisch auf die native „Ausblenden“-Schaltfläche von immotop.lu für jede Anzeige blockierter Anbieter, damit sie auch in der mobilen App verschwindet. Funktioniert anders als das Ausblenden der Erweiterung: Sie müssen bei Ihrem immotop.lu-Konto angemeldet sein, die Aktion ist an dieses Konto gebunden (nicht nur an diesen Browser) und wird beim Entsperren eines Anbieters nicht automatisch rückgängig gemacht.',
+    'content.syncLoginWarning': 'Smartphone-Synchronisierung: Melden Sie sich bei Ihrem immotop.lu-Konto an, um sie zu aktivieren.',
+    'card.unblockRestoreHint':
+      'Die Smartphone-Synchronisierung war aktiv: Die Anzeigen von „{name}“ bleiben auf immotop.lu ausgeblendet. Zum Wiederherstellen:',
+    'card.unblockRestoreLink': 'Meine ausgeblendeten Anzeigen öffnen',
+    'settings.syncLoginRequired': 'Melden Sie sich bei Ihrem immotop.lu-Konto an, um sie zu aktivieren.',
+    'settings.syncLoginRequiredLink': 'immotop.lu öffnen',
   },
   en: {
+    'tabs.list': 'Listings',
+    'tabs.settings': 'Settings',
     'toolbar.export': 'Export',
+    'common.close': 'Close',
     'toolbar.import': 'Import',
     'language.label': 'Language',
     'language.auto': 'Auto (browser)',
@@ -83,9 +110,21 @@ const MESSAGES = {
     'content.maskTitle': 'Listing hidden',
     'content.maskSubtitle': 'Blocked seller: {name}',
     'content.maskReveal': 'Show anyway',
+    'settings.syncTitle': 'Smartphone sync',
+    'settings.syncDisclaimer':
+      'Automatically clicks immotop.lu\'s native "hide" button for every listing from blocked sellers, so it also disappears from the mobile app. Works differently from the extension\'s own masking: you must be signed in to your immotop.lu account, the action is tied to that account (not just this browser), and it isn\'t automatically undone when you unblock a seller.',
+    'content.syncLoginWarning': 'Smartphone sync: sign in to your immotop.lu account to enable it.',
+    'card.unblockRestoreHint':
+      'Smartphone sync was on: listings from "{name}" remain hidden on immotop.lu. To restore them:',
+    'card.unblockRestoreLink': 'Open my hidden listings',
+    'settings.syncLoginRequired': 'Sign in to your immotop.lu account to enable it.',
+    'settings.syncLoginRequiredLink': 'Open immotop.lu',
   },
   pt: {
+    'tabs.list': 'Anúncios',
+    'tabs.settings': 'Definições',
     'toolbar.export': 'Exportar',
+    'common.close': 'Fechar',
     'toolbar.import': 'Importar',
     'language.label': 'Idioma',
     'language.auto': 'Automático (navegador)',
@@ -110,9 +149,21 @@ const MESSAGES = {
     'content.maskTitle': 'Anúncio ocultado',
     'content.maskSubtitle': 'Vendedor bloqueado: {name}',
     'content.maskReveal': 'Mostrar mesmo assim',
+    'settings.syncTitle': 'Sincronização com smartphone',
+    'settings.syncDisclaimer':
+      'Clica automaticamente no botão nativo «ocultar» do immotop.lu para cada anúncio de vendedores bloqueados, para que também desapareça da aplicação móvel. Funciona de forma diferente do mascaramento da extensão: é necessário estar autenticado na sua conta immotop.lu, a ação fica associada a essa conta (não apenas a este navegador) e não é anulada automaticamente quando desbloqueia um vendedor.',
+    'content.syncLoginWarning': 'Sincronização com smartphone: inicie sessão na sua conta immotop.lu para a ativar.',
+    'card.unblockRestoreHint':
+      'A sincronização com smartphone estava ativa: os anúncios de «{name}» continuam ocultos no immotop.lu. Para os restaurar:',
+    'card.unblockRestoreLink': 'Abrir os meus anúncios ocultos',
+    'settings.syncLoginRequired': 'Inicie sessão na sua conta immotop.lu para poder ativá-la.',
+    'settings.syncLoginRequiredLink': 'Abrir immotop.lu',
   },
   lb: {
+    'tabs.list': 'Annoncen',
+    'tabs.settings': 'Astellungen',
     'toolbar.export': 'Exportéieren',
+    'common.close': 'Zoumaachen',
     'toolbar.import': 'Importéieren',
     'language.label': 'Sprooch',
     'language.auto': 'Automatesch (Browser)',
@@ -137,6 +188,15 @@ const MESSAGES = {
     'content.maskTitle': 'Annonce verstoppt',
     'content.maskSubtitle': 'Blockéierten Verkeefer: {name}',
     'content.maskReveal': 'Trotzdeem uweisen',
+    'settings.syncTitle': 'Smartphone-Synchro',
+    'settings.syncDisclaimer':
+      'Klickt automatesch op de native „verstoppen“-Knäppchen vun immotop.lu fir all Annonce vu blockéierte Verkeefer, domat se och an der Handy-App verschwënnt. Funktionéiert anescht wéi d\'Verstoppen vun der Extension: Dir musst an Ärem immotop.lu-Kont ageloggt sinn, d\'Aktioun ass un dëse Kont gebonnen (net nëmmen un dëse Browser) a gëtt net automatesch réckgängeg gemaach wann Dir e Verkeefer entsperrt.',
+    'content.syncLoginWarning': 'Smartphone-Synchro: loggt Iech an Ärem immotop.lu-Kont an fir se z\'aktivéieren.',
+    'card.unblockRestoreHint':
+      'D\'Smartphone-Synchro war aktiv: D\'Annoncen vu „{name}“ bleiwen op immotop.lu verstoppt. Fir se erëmhierzestellen:',
+    'card.unblockRestoreLink': 'Meng verstoppt Annoncen opmaachen',
+    'settings.syncLoginRequired': "Loggt Iech an Ärem immotop.lu-Kont an fir se z'aktivéieren.",
+    'settings.syncLoginRequiredLink': 'immotop.lu opmaachen',
   },
 };
 
